@@ -24,7 +24,7 @@ class PanelController extends BaseController
                 ->with('client', function ($q) {
                     $q->select('CLI_ID', 'CLI_NOME');
                 })
-                ->where('EQP_GATEWAY', 'N')
+//                ->where('EQP_GATEWAY', 'N')
                 ->orderBy('EQP_ORDEM_EXIBICAO')
                 ->get();
 
@@ -37,7 +37,7 @@ class PanelController extends BaseController
                 ->with(['client' => function ($q) {
                     $q->select('CLI_ID', 'CLI_NOME');
                 }])
-                ->where('EQP_GATEWAY', 'N')
+//                ->where('EQP_GATEWAY', 'N')
                 ->orderBy('EQP_ORDEM_EXIBICAO')
                 ->get();
 
