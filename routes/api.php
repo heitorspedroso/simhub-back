@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\SqlServerNativeAuditController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\User\UserController;
@@ -18,7 +19,8 @@ use App\Http\Controllers\Client\ContactController;
 Route::prefix('auth')->group(function () {
     Route::post('login',        [AuthController::class, 'login']);
     Route::post('logout',       [AuthController::class, 'logout'])->middleware('auth:sanctum'); //->middleware('auth:');
-    Route::post('recover',      [AuthController::class, 'recover']);
+    Route::post('recover/request',      [AuthController::class, 'recoverRequest']);
+    Route::post('recover/reset',        [AuthController::class, 'recoverReset']);
 });
 
 Route::prefix('user')->middleware('auth:sanctum')->group(function () {
@@ -112,6 +114,17 @@ Route::prefix('test')->group(function () {
         return ['teste-post', 'testando'];
     });
 });
+
+Route::prefix('sqlserver-audit')->group(function () {
+    Route::get('create-trigger', [SqlServerNativeAuditController::class, 'createAuditTrigger']);
+    Route::get('/test-update', [SqlServerNativeAuditController::class, 'testNoChangeUpdate']);
+    Route::get('logs', [SqlServerNativeAuditController::class, 'readAuditLog']);
+    Route::get('drop-trigger', [SqlServerNativeAuditController::class, 'dropAuditTrigger']);
+
+});
+
+
+
 
 
 
