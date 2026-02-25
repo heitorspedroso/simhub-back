@@ -744,6 +744,10 @@ class Device extends Model
             if (isset($h['ERR_2_INI'])) $ret['ERR_2_INI'] = $h['ERR_2_INI'];
             if (isset($h['ERR_2_FIM'])) $ret['ERR_2_FIM'] = $h['ERR_2_FIM'];
 
+            // Para cálculo de volume no tooltip (Valor na unidade = % × VLR_PROP)
+            if (isset($h['UN']))       $ret['UN']       = $h['UN'];
+            if (isset($h['VLR_PROP'])) $ret['VLR_PROP'] = $h['VLR_PROP'];
+
             return $ret;
         }, $historic);
     }

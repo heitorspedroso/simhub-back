@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,10 +20,10 @@ class DeviceStatusHistoric extends Model
         'STT_OP_NIVEL',
         'STT_NIVEL_INF',
         'STT_NIVEL_SUP',
-        'STT_01_REG',
-        'STT_02_REG',
-        'STT_03_REG',
-        'STT_04_REG',
+        // 'STT_01_REG', // exibido no tooltip do gráfico
+        // 'STT_02_REG', // exibido no tooltip do gráfico
+        // 'STT_03_REG', // exibido no tooltip do gráfico
+        // 'STT_04_REG', // exibido no tooltip do gráfico
         'STT_05_HIDR',
         'STT_06_HIDR',
         'STT_07_HIDR',
@@ -76,19 +77,21 @@ class DeviceStatusHistoric extends Model
 
                 if (in_array($attr, ['EAE', 'EAP', 'EDP']))
                     $ds[$type][$sub]['value'] = $d;
+                elseif ($attr === 'REG' && $type === 'analog')
+                    $ds[$type][$sub]['reg'] = $d;
             } else
-            if (substr($kD, 0, 4) == 'TEMP') {
-                // if($d == 0) continue;
-                $sub = substr($kD, 4);
-                // $ds['port'][24][$sub]['status']['value'] = $d;
-                $ds['temperature'][$sub]['value'] = $d;
-            } else {
+                if (substr($kD, 0, 4) == 'TEMP') {
+                    // if($d == 0) continue;
+                    $sub = substr($kD, 4);
+                    // $ds['port'][24][$sub]['status']['value'] = $d;
+                    $ds['temperature'][$sub]['value'] = $d;
+                } else {
 
-                // if($kD == 'DATA_HORA')
-                //     $d = date('Y/m/d H:i:s', strtotime($d));
+                    // if($kD == 'DATA_HORA')
+                    //     $d = date('Y/m/d H:i:s', strtotime($d));
 
-                $ds[$kD] = $d;
-            }
+                    $ds[$kD] = $d;
+                }
 
             // else
             // if( $sub == 'RL' ){
@@ -115,6 +118,7 @@ class DeviceStatusHistoric extends Model
             'time' => [],
             'data' => [
                 'analog' => [],
+                'analog_reg' => [],
                 'temperature' => [],
                 'digital' => [],
             ],
@@ -125,11 +129,12 @@ class DeviceStatusHistoric extends Model
         $validDigitalKeys = array_keys($device['digital']);
 
         foreach ($device['status_historic'] as $h) {
-            $acc['time'][] = $h['DATA_HORA'];
+            $acc['time'][] = Carbon::parse($h['DATA_HORA'])->format('d/m/Y H:i:s');
 
             foreach ($validAnalogKeys as $kD) {
                 if (isset($h['analog'][$kD])) {
                     $acc['data']['analog'][$kD][] = $h['analog'][$kD]['value'];
+                    $acc['data']['analog_reg'][$kD][] = $h['analog'][$kD]['reg'] ?? null;
                 }
             }
 
