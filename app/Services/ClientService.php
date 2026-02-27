@@ -11,7 +11,7 @@ class ClientService
     {
         if ($user->USR_MASTER === 'S')
             $client = new Client; // $client = Client::all();
-        else if ($user->USR_MASTER === 'M')
+        else if ($user->USR_MASTER === 'M' || $user->USR_MASTER === 'N')
             $client = $user->client();
         else
             return [];
